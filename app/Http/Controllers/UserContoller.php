@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\NetworkModel;
 use App\Models\User;
 
+use Mail;
+use Illuminate\Support\Facades\URL;
+
 class UserContoller extends Controller
 
 {
@@ -55,7 +58,38 @@ class UserContoller extends Controller
                 'referral_code' => $referralCode,
             ]);
 
+            $domain = URL::to('/');
+            $url = $domain.'/referral-register?ref='.$referralCode;
+
+            $data['url'] = $url;
+            $data['name'] = $request->name;
+            $data['email'] = $request->email;
+            $data['password'] = $request->password;
+            $data['title'] = 'Registered';
+
+            Mail::send('emails.registerMail',['data' => $data], function($message) use($data){
+                $message->to( $data['email'])->subject($data['title']);
+            });
+
             return back()->with('success', 'Your registration was successful!');
+        }
+    }
+
+
+    public function loadReferralRegister(Request $request ){
+        if (isset($request->ref)) {
+            $referral = $request->ref;
+            $userData = User::where('referral_code',$referral)->get();
+
+            if (count($userData)> 0) {
+                return view('referralRegister', compact('referral'));
+            }
+            else {
+                return view('404');
+            }
+        }
+        else{
+            return redirect('/');
         }
     }
 

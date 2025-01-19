@@ -21,4 +21,6 @@ Route::get('/', function () {
 Route::controller(UserContoller::class)->group(function () {
     Route::get('/register', 'loadRegister')->name('register'); // Show the registration form
     Route::post('/user-register', 'registered')->name('registered'); // Process registration form
+
+    Route::get('/referral-register', 'loadReferralRegister');
 });
