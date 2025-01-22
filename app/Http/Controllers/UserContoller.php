@@ -36,7 +36,7 @@ class UserContoller extends Controller
                 $userId = User::insertGetId([
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => Hash::make($request->password),
+                    'password' => Hash::make($request->password), 
                     'referral_code' => $referralCode,
                 ]);
 
